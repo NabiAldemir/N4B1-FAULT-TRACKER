@@ -1,0 +1,20 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<Reason>
+@{
+    ViewBag.Title = "ArizaNedeniEkle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<form class="form-group" method="post">
+    <div>
+        <label>Arıza Nedeni Ekle</label>
+        <input type="text" class="form-control" name="ProblemReason" required/>
+
+    </div>
+    <div style="margin-top:15px">
+        <button class="btn btn-info">Arıza Nedeni Ekle</button>
+
+    </div>
+</form>
+

@@ -1,0 +1,22 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<Situation>
+@{
+    ViewBag.Title = "ArizaDurumuEkle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form class="form-group" method="post">
+    <div>
+        <label>Arıza Durumu Ekle</label>
+        <input type="text" class="form-control" name="ProblemSituation" required/>
+
+    </div>
+    <div style="margin-top:15px">
+        <button class="btn btn-info">Arıza Durumu Ekle</button>
+
+    </div>
+</form>
+
+
+
+

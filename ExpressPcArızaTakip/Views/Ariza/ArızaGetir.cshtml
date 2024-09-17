@@ -1,0 +1,119 @@
+﻿@model ExpressPcArızaTakip.Models.Entity.TBLPROBLEM
+@using ExpressPcArızaTakip.Models.Entity;
+@{
+    ViewBag.Title = "ArızaGetir";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+    var defaultModel = new TBLPROBLEM();
+    defaultModel = ViewBag.defaultModel;
+}
+
+
+<script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
+
+<div class="form-group">
+
+
+    <label>Kişiyi Seç</label>
+    <input class="form-control" id="Id" value="@Model.ProblemId" type="hidden" hidden />
+    <select name="ProblemUserId" class="form-control" value="@Model.ProblemUserId" id="userNameId" >
+        @foreach (var item in (List<SelectListItem>)ViewBag.arz)
+        {
+            <option value="@item.Value">@item.Text </option>
+        }
+    </select>
+
+    <br />
+
+    <label>Arıza Nedenini Seç</label>
+    <select name="ProblemReasonId" class="form-control" value="@Model.ProblemReasonId" id="reasonId">
+
+        @foreach (var item in (List<SelectListItem>)ViewBag.arz1)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+
+    <br />
+    <label>Arıza Durumunu Seç</label>
+    <select name="ProblemSituationId" class="form-control" value="@Model.ProblemSituationId" id="situationId">
+
+        @foreach (var item in (List<SelectListItem>)ViewBag.arz2)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+
+
+
+    <br />
+    <label>Arıza Yerini Seç</label>
+    <select name="ProblemPlaceId" class="form-control" value="@Model.ProblemPlaceId" id="placeId">
+
+        @foreach (var item in (List<SelectListItem>)ViewBag.arz3)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+
+
+</div>
+<div>
+    <button onclick="UpdateBtn()" class="btn btn-warning">Güncelle</button>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        document.getElementById("updateProblem").value=@defaultModel.ProblemUserId;
+    });
+
+    function UpdateBtn() {
+        var ProblemId = document.getElementById("Id").value;
+        var ProblemUserId = document.getElementById("userNameId").value;
+        var ProblemReasonId = document.getElementById("reasonId").value;
+        var ProblemSituationId = document.getElementById("situationId").value;
+        var ProblemPlaceId = document.getElementById("placeId").value;
+        var theProblem = {
+            ProblemId: ProblemId,
+            ProblemUserId: ProblemUserId,
+            ProblemReasonId: ProblemReasonId,
+            ProblemSituationId: ProblemSituationId,
+            ProblemPlaceId: ProblemPlaceId,
+        };
+        //var theData = JSON.stringify(theProblem);
+        $.ajax({
+            type: "POST",
+            url: "/Arıza/Update",
+            data: theProblem,
+            success: function (data) {
+                Swal.fire({
+                    title: "Do you want to save the changes?",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Save",
+                    denyButtonText: `Don't save`
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire("Saved!", "", "success");
+                    } else if (result.isDenied) {
+                        Swal.fire("Changes are not saved", "", "info");
+                    }
+
+                });
+            },
+            error: function (data) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong!",
+
+                });
+            }
+
+        });
+    }
+
+
+</script>
+
+

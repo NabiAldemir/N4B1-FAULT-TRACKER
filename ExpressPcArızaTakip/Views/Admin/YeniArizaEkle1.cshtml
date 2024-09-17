@@ -1,0 +1,124 @@
+﻿@model ExpressPcArızaTakip.Models.Entity.Problem
+
+
+@{
+    ViewBag.Title = "YeniArizaEkle1";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<form class="form-group"  method="post" onsubmit="return validateForm(event)">
+    <div>
+        <label>Kişi Seç</label>
+        <select name="ProblemUserId" class="form-control" id="ProblemUserId">
+            <option value="0" hidden>Kişi Seç</option>
+            @foreach (var item in (List<SelectListItem>)ViewBag.dgr)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <br />
+
+    <label>Arıza Sebebini Seç</label>
+    <select name="ProblemReasonId" class="form-control" id="ProblemReasonId">
+        <option value="0" hidden>Arıza Sebebini Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr1)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div>
+
+    </div>
+    <br />
+    <label>Arıza Durumunu Seç</label>
+    <select name="ProblemSituationId" class="form-control" id="ProblemSituationId">
+        <option value="0" hidden>Arıza Durumunu Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr2)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div>
+    </div>
+    <br />
+    <label>Şirketi Seç</label>
+    <select name="ProblemCompanyId" class="form-control" id="ProblemCompanyId">
+        <option value="0" hidden>Şirketi Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr3)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div>
+        <label>Detaylar</label>
+        <textarea name="ProblemDetails" class="form-control" rows="4" id="ProblemDetails" placeholder="Arıza ile ilgili detayları buraya giriniz..."></textarea>
+    </div>
+
+    <br />
+    <div>
+        <button class="btn btn-info">Yeni Arıza Ekle</button>
+    </div>
+
+
+</form>
+<script>
+    function validateForm(event) {
+        // Form alanlarını kontrol et
+        var problemUserId = document.querySelector("#ProblemUserId").value;
+        var problemReasonId = document.querySelector("#ProblemReasonId").value;
+        var problemSituationId = document.querySelector("#ProblemSituationId").value;
+        var problemCompanyId = document.querySelector("#ProblemCompanyId").value;
+        var problemDetails = document.querySelector("#ProblemDetails").value.trim();
+
+        // Hatalı alanı belirlemek için her bir alanı ayrı ayrı kontrol et
+        if (problemUserId === "0") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir kişi seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemReasonId === "0") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir arıza sebebi seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemSituationId === "0") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir arıza durumu seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemPlaceId === "0") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir arıza yeri seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemDetails === "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen arıza ile ilgili detayları giriniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+
+        // Eğer tüm alanlar doluysa, form gönderimine izin ver
+        return true;
+    }
+</script>

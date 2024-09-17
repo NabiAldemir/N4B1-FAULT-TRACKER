@@ -1,0 +1,96 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<Company>
+@{
+    ViewBag.Title = "Sirketler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<br />
+<div class="row mt-3" style="margin-bottom:10px;">
+    <div class="col-md-12 text-center">
+        <a href="/Admin/SirketEkle" class="btn btn-primary">Şirket Ekle</a>
+    </div>
+</div>
+
+<table class="table table-striped table-bordered table-hover table-condensed" id="myTable">
+    <thead>
+        <tr>
+            <th><i class="fas fa-map-marker-alt"></i>Şirketler</th>
+            <th>SİL</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ktgr in Model)
+        {
+            <tr>
+                <td>@ktgr.Companies</td>
+                <td>
+                    <button class="btn btn-danger delete-button" data-id="@ktgr.Id">Sil</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- SweetAlert ve jQuery kütüphanelerini dahil et -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+        // .delete-button sınıfına tıklama olayını ekleyin
+        $('.delete-button').on('click', function () {
+            var userId = $(this).data('id'); // Kullanıcı ID'sini alın
+            var button = $(this); // Butonu referans alın
+
+            // Silme işlemi için SweetAlert ile kullanıcıdan onay alın
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu arıza nedenini silmek istiyor musunuz?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, sil',
+                cancelButtonText: 'İptal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // AJAX ile silme isteği gönder
+                    $.ajax({
+                        url: '/Admin/SIL4/' + userId,
+                        method: 'POST',
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Başarılı!',
+                                    text: response.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'Tamam'
+                                }).then(() => {
+                                    button.closest('tr').remove(); // Satırı tablodan kaldır
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Hata!',
+                                    text: response.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'Tamam'
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: 'Hata!',
+                                text: 'Silme işlemi sırasında bir hata oluştu.',
+                                icon: 'error',
+                                confirmButtonText: 'Tamam'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+

@@ -1,0 +1,218 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<Problem>
+@{
+    ViewBag.Title = "TabloyuGuncelle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<br />
+<div class="row mt-3 mb-3">
+    <div class="col-md-12 text-center">
+        <!-- "Yeni Arıza Ekle" butonu için modal tetikleme -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProblemModal">
+            Yeni Arıza Ekle
+        </button>
+    </div>
+</div>
+
+
+<div id="myTableContainer">
+    @Html.Partial("ProblemTable", @Model)
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Ensure the DataTable is initialized only after the DOM is fully loaded
+        $('#myTable').DataTable({
+            "pageLength": 8,
+            "lengthMenu": [8, 15, 25, 50, 100],
+
+        });
+    });
+
+    // Modalı açmadan önce ilgili arıza verilerini doldurmak için JS fonksiyonu
+    function GetProblem(data) {
+        var problemId = data.dataset.problemid;
+
+        $.ajax({
+            type: "GET",
+            url: "/Admin/GetProblem", // Burada serverdan problemi getiriyoruz
+            data: { "problemId": problemId },
+            success: function (data) {
+                // Formdaki alanları dolduruyoruz
+                document.getElementById("problemId").value = data.Id;
+                document.getElementById("userNameId").value = data.ProblemUserId;
+                document.getElementById("reasonId").value = data.ProblemReasonId;
+                document.getElementById("situationId").value = data.ProblemSituationId;
+                document.getElementById("companyId").value = data.ProblemCompanyId;
+                document.getElementById("ProblemDetails").value = data.ProblemDetails;
+
+                // Modalı açıyoruz
+                $('#updateProblemModal').modal('show');
+            },
+            error: function (data) {
+                alert("Veriler getirilemedi. Lütfen tekrar deneyin.");
+            }
+        });
+    }
+
+
+    function UpdateBtn() {
+        var ProblemId = document.getElementById("Id").value;
+        var ProblemUserId = document.getElementById("userNameId").value;
+        var ProblemReasonId = document.getElementById("reasonId").value;
+        var ProblemSituationId = document.getElementById("situationId").value;
+        var ProblemCompanyId = document.getElementById("companyId").value;
+        var theProblem = {
+            Id: ProblemId,
+            ProblemUserId: ProblemUserId,
+            ProblemReasonId: ProblemReasonId,
+            ProblemSituationId: ProblemSituationId,
+            ProblemCompanyId: ProblemCompanyId,
+        };
+
+        Swal.fire({
+            title: "Değişiklikleri kaydetmek istiyor musunuz?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Kaydet",
+            denyButtonText: `Kaydetme`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/Update",
+                    data: theProblem,
+                    success: function (data) {
+                        $('#myModal').modal('hide');
+
+                        $.ajax({
+                            url: "/Admin/RefreshProblemTable",
+                            type: 'GET',
+                            success: function (data) {
+                                $("#myTableContainer").html(data);
+
+                                // DataTable'ı sıfırla ve yeniden başlat
+                                if ($.fn.DataTable.isDataTable('#myTable')) {
+                                    $('#myTable').DataTable().destroy();
+                                }
+                                $('#myTable').DataTable({
+                                    "pageLength": 8,
+                                    "lengthMenu": [8, 15, 25, 50, 100]
+                                });
+
+                                $('.modal-backdrop').remove();
+                            }
+                        });
+                    },
+                    error: function (data) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Bir hata oluştu!",
+                        });
+                    }
+                });
+            } else if (result.isDenied) {
+                Swal.fire("Değişiklikler kaydedilmedi", "", "info");
+            }
+        });
+    }
+
+    function validateForm(event) {
+        // Form alanlarını kontrol et
+        var problemUserId = document.querySelector("#ProblemUserId").value;
+        var problemReasonId = document.querySelector("#ProblemReasonId").value;
+        var problemSituationId = document.querySelector("#ProblemSituationId").value;
+        var problemCompanyId = document.querySelector("#ProblemCompanyId").value;
+        var problemDeviceId = document.querySelector("#ProblemDeviceId").value;
+        var problemDevicePartId = document.querySelector("#ProblemDevicePartId").value;
+        var problemDetails = document.querySelector("#ProblemDetails").value.trim();
+
+        // Her bir alanı kontrol et ve kullanıcıya uygun bir uyarı göster
+        if (problemUserId === "1") { // Eğer kişi seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir kişi seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemReasonId === "2") { // Eğer arıza sebebi seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir arıza sebebi seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemSituationId === "3") { // Eğer arıza durumu seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir arıza durumu seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemCompanyId === "4") { // Eğer şirket seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir şirket seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemDeviceId === "5") { // Eğer cihaz seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir cihaz seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+        if (problemDevicePartId === "6") { // Eğer cihaz parçası seçili değilse
+            Swal.fire({
+                icon: 'warning',
+                title: 'Eksik Bilgi!',
+                text: 'Lütfen bir cihaz parçası seçiniz.',
+                confirmButtonText: 'Tamam'
+            });
+            return false; // Form gönderimini engelle
+        }
+
+
+        // Eğer tüm alanlar doluysa, form gönderimine izin ver
+        return true;
+    }
+    function fetchCompanyByUser() {
+        var userId = document.getElementById("ProblemUserId").value;
+
+        if (userId !== "1") { // Eğer geçerli bir kişi seçildiyse
+            $.ajax({
+                type: "GET",
+                url: "/Admin/GetCompanyByUser", // Controller'daki aksiyonun yolu
+                data: { userId: userId }, // Seçilen kişinin ID'sini gönderiyoruz
+                success: function (response) {
+                    if (response.success) {
+                        // Şirket select kutusunu doldur
+                        $("#ProblemCompanyId").html('<option value="' + response.companyId + '">' + response.companyName + '</option>');
+                    } else {
+                        alert("Şirket bilgisi bulunamadı.");
+                    }
+                },
+                error: function () {
+                    alert("Bir hata oluştu.");
+                }
+            });
+        }
+    }
+
+
+
+</script>

@@ -1,0 +1,59 @@
+﻿@model ExpressPcArızaTakip.Models.Entity.TBLPROBLEM
+
+@{
+    ViewBag.Title = "YeniArıza";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<form class="form-group" method="post">
+    <div>
+        <label>Kişi Seç</label>
+        <select name="ProblemUserId" class="form-control">
+            <option value="0" hidden>Kişi Seç</option>
+            @foreach (var item in (List<SelectListItem>)ViewBag.dgr)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <br />
+
+    <label>Arıza Sebebini Seç</label>
+    <select name="ProblemReasonId" class="form-control">
+        <option value="0" hidden>Arıza Sebebini Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr1)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div>
+
+    </div>
+    <br />
+    <label>Arıza Durumunu Seç</label>
+    <select name="ProblemSituationId" class="form-control">
+        <option value="0" hidden>Arıza Durumunu Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr2)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div>
+    </div>
+    <br />
+    <label>Arıza Yerini Seç</label>
+    <select name="ProblemPlaceId" class="form-control">
+        <option value="0" hidden>Arıza Yerini Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr3)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <br />
+    <div>
+        <button class="btn btn-info">Yeni Arıza Ekle</button>
+    </div>
+
+
+</form>
+

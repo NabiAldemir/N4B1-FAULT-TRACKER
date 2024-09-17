@@ -1,0 +1,21 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<User>
+@{
+  
+        ViewBag.Title = "SorumluKisiEkle";
+        Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    }
+
+<form class="form-group" method="post">
+    <div>
+        <label>Sorumlu Kişi Ekle</label>
+        <input type="text" class="form-control" name="Users" />
+
+    </div>
+    <div style="margin-top:15px">
+        <button class="btn btn-info">Sorumlu Kişi Ekle</button>
+
+    </div>
+</form>
+
+

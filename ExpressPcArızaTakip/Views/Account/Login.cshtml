@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/_LayoutPage1.cshtml";
+}
+<br />
+<br />
+<br />
+<br />
+<br />
+<body>
+    <div class="logo-wrapper">
+        <h1 style="color: whitesmoke;">N4B1 Arıza Takip</h1>
+        <div style="text-align: center;">
+            
+        </div>
+    </div>
+    <div class="w3ls-login box box--big" style="margin-top:5px;">
+        <!-- form starts here -->
+        <form action="@Url.Action("Verify")" method="post">
+            <input type="hidden" name="ReturnUrl" value="@Request.QueryString["ReturnUrl"]" />
+            <div class="agile-field-txt">
+                <label><i class="fa fa-user" aria-hidden="true"></i> Kullanıcı Adı </label>
+                <input type="text" name="Name" placeholder="Kullanıcı Adını Giriniz" required="" />
+            </div>
+            <div class="agile-field-txt">
+                <label><i class="fa fa-unlock-alt" aria-hidden="true"></i> Şifre </label>
+                <input type="password" name="Password" placeholder="Şifrenizi Giriniz" required="" id="myInput" />
+                <div class="agile_label">
+                    <input id="check3" name="check3" type="checkbox" value="show password" onclick="myFunction()">
+                    <label class="check" for="check3">Şifreyi Göster</label>
+                </div>
+            </div>
+            <!-- script for show password -->
+            <script>
+                function myFunction() {
+                    var x = document.getElementById("myInput");
+                    if (x.type === "password") {
+                        x.type = "text";
+                    } else {
+                        x.type = "password";
+                    }
+                }
+            </script>
+            <!-- //end script -->
+            <input type="submit" value="Giriş Yap">
+        </form>
+    </div>
+    <!-- //form ends here -->
+    <!--copyright-->
+    <!--//copyright-->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            Swal.fire({
+                icon: "error",
+                title: "Yanlış Kullanıcı Adı veya Şifre",
+                text: "Lütfen Tekrar Deneyin",
+            });
+        </script>
+    }
+    @if (TempData["ErrorMessage1"] != null)
+    {
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            Swal.fire({
+                icon: "error",
+                title: "İzin Verilmedi",
+                
+            });
+        </script>
+    }
+</body>

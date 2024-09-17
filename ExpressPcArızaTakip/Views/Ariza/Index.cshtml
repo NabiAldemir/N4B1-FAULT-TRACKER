@@ -1,0 +1,231 @@
+﻿@using ExpressPcArızaTakip.Models.Entity
+@model List<TBLPROBLEM>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/MainLayout.cshtml";
+}
+
+<div class="logo-container">
+    <img src="~/Content/logob.png" alt="Logo" class="logo-image" />
+</div>
+<div class="content-container">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button id="logoutBtn" class="btn btn-danger">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span> Çıkış
+            </button>
+        </div>
+    </div>
+
+    <div id="myTableContainer">
+        @Html.Partial("ProblemTable", @Model)
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-12 text-center">
+            <a href="/Ariza/YeniArıza/" class="btn btn-primary">Yeni Arıza Ekle</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    td[contenteditable="true"] {
+        cursor: text; /* Metin düzenleme imleci göster */
+        outline: none; /* İmleç etrafında istenmeyen bir çerçeve yok */
+    }
+    .collapse .card {
+        margin-top: 10px;
+    }
+
+    .details-button {
+        cursor: pointer;
+        text-align: center;
+    }
+   
+    .logo-container {
+        text-align: center;
+        margin-bottom: 5px; /* Logo ile diğer içerikler arasında boşluk */
+    }
+
+    .logo-image {
+        height: 50px; /* Logonun yüksekliği */
+        width: auto; /* Logonun orantılı genişliği */
+    }
+
+    .content-container {
+        margin-top: -45px; /* İçerikleri yukarıya taşır */
+    }
+
+    #myTableContainer {
+        margin-top: 10px; /* Tablo ile diğer içerikler arasına boşluk bırakır */
+    }
+</style>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "pageLength": 8,
+            "lengthMenu": [8, 15, 25, 50, 100],
+            
+        });
+    });
+    var detailRows = [];
+
+    function GetProblem(data) {
+        var problemId = data.dataset.problemid;
+        $.ajax({
+            type: "GET",
+            url: "/Ariza/GetProblem",
+            data: { "problemId": problemId },
+            success: function (data) {
+                document.getElementById("Id").value = data.ProblemId;
+                document.getElementById("userNameId").value = data.ProblemUserId;
+                document.getElementById("reasonId").value = data.ProblemReasonId;
+                document.getElementById("situationId").value = data.ProblemSituationId;
+                document.getElementById("placeId").value = data.ProblemPlaceId;
+            },
+            error: function (data) {
+                alert(data[0] + "hata");
+            }
+        });
+    }
+
+    function UpdateBtn() {
+        var ProblemId = document.getElementById("Id").value;
+        var ProblemUserId = document.getElementById("userNameId").value;
+        var ProblemReasonId = document.getElementById("reasonId").value;
+        var ProblemSituationId = document.getElementById("situationId").value;
+        var ProblemPlaceId = document.getElementById("placeId").value;
+        var theProblem = {
+            ProblemId: ProblemId,
+            ProblemUserId: ProblemUserId,
+            ProblemReasonId: ProblemReasonId,
+            ProblemSituationId: ProblemSituationId,
+            ProblemPlaceId: ProblemPlaceId,
+        };
+
+        Swal.fire({
+            title: "Değişiklikleri kaydetmek istiyor musunuz?",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Kaydet",
+            denyButtonText: `Kaydetme`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Ariza/Update",
+                    data: theProblem,
+                    success: function (data) {
+                        $('#myModal').modal('hide');
+
+                        $.ajax({
+                            url: "/Ariza/RefreshProblemTable",
+                            type: 'GET',
+                            success: function (data) {
+                                $("#myTableContainer").html(data);
+
+                                // DataTable'ı sıfırla ve yeniden başlat
+                                if ($.fn.DataTable.isDataTable('#myTable')) {
+                                    $('#myTable').DataTable().destroy();
+                                }
+                                $('#myTable').DataTable({
+                                    "pageLength": 8,
+                                    "lengthMenu": [8, 15, 25, 50, 100]
+                                });
+
+                                $('.modal-backdrop').remove();
+                            }
+                        });
+                    },
+                    error: function (data) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Bir hata oluştu!",
+                        });
+                    }
+                });
+            } else if (result.isDenied) {
+                Swal.fire("Değişiklikler kaydedilmedi", "", "info");
+            }
+        });
+    }
+
+    $('#logoutBtn').on('click', function () {
+        Swal.fire({
+            title: 'Çıkış yapmak istediğinize emin misiniz?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Evet, çıkış yap',
+            cancelButtonText: 'Hayır, kal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Logout", "Account")',
+                    success: function () {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Başarıyla çıkış yapıldı',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '@Url.Action("Login", "Account")';
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Çıkış başarısız',
+                            text: 'Çıkış yaparken bir hata oluştu. Lütfen tekrar deneyin.',
+                        });
+                    }
+                });
+            }
+        });
+    });
+    // Save notes via AJAX
+    $('.save-note-btn').on('click', function () {
+        var problemId = $(this).data('problemid');
+        var notes = $(this).siblings('.note-textarea').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Ariza/UpdateNotes",
+            data: { problemId: problemId, notes: notes },
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Notlar kaydedildi',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Kaydedilemedi',
+                        text: 'Notlar kaydedilirken bir hata oluştu.',
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kaydedilemedi',
+                    text: 'Notlar kaydedilirken bir hata oluştu.',
+                });
+            }
+        });
+    });
+
+
+   
+  
+        
+      
+
+
+</script>
+<script src="https://cdn.datatables.net/plug-ins/1.11.5/i18n/Turkish.json"></script>

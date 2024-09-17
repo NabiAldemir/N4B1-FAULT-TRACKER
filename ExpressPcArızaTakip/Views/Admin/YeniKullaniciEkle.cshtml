@@ -1,0 +1,83 @@
+﻿@model ExpressPcArızaTakip.Models.Entity.Role
+@{
+    ViewBag.Title = "YeniKullaniciEkle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<form method="post" class="form-group">
+    <div>
+        <label>Kullanıcı</label>
+        <input type="text" class="form-control" name="Users" />
+
+    </div>
+    <div>
+        <label>Kullanıcı Adı</label>
+        <input type="text" class="form-control" name="UserName" />
+
+    </div>
+    <div>
+        <label>Kullanıcı Şifresi</label>
+        <input type="text" class="form-control" name="Password" />
+
+    </div>
+    <label>Kullanıcı Yetkisini Seç</label>
+    <select name="ProblemReasonId" class="form-control" id="ProblemReasonId">
+        <option value="0" hidden>Arıza Sebebini Seç</option>
+        @foreach (var item in (List<SelectListItem>)ViewBag.dgr)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+    <div style="margin-top:15px;">
+        <button class="btn btn-info">Yeni Kullanıcı Ekle</button>
+
+    </div>
+</form>
+
+<!--<--><!-- Kullanıcı Ekle Modal -->
+<!--<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Yeni Kullanıcı Ekle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="userForm" action="@Url.Action("YeniKullaniciEkle", "Admin")" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">Kullanıcı Adı</label>
+                        <input type="text" class="form-control" id="username" name="UserName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Şifre</label>
+                        <input type="password" class="form-control" id="password" name="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleId">Yetki</label>
+                        <select class="form-control" id="roleId" name="RoleId">
+                            @foreach (var role in ViewBag.Roles)
+                            {
+                                <option value="@role.Id">@role.Roles</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyId">Şirket</label>
+                        <select class="form-control" id="companyId" name="CompanyId">
+                            @foreach (var company in ViewBag.Companies)
+                            {
+                                <option value="@company.Id">@company.Companies</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>-->

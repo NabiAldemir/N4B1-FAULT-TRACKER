@@ -1,0 +1,246 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>AdminLTE 3 | Dashboard 3</title>
+    <script src="~/JS Dosyaları/jquerys.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="~/AdminLTE-3.0.4/plugins/fontawesome-free/css/all.min.css">
+    <!-- IonIcons -->
+    <link rel="stylesheet" href="~/JS Dosyaları/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/AdminLTE-3.0.4/dist/css/adminlte.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link href="~/JS Dosyaları/css.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/JS Dosyaları/dataTables.dataTables.css" />
+    <script src="~/JS Dosyaları/dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="~/JS Dosyaları/jquery.dataTables.js"></script>
+    <script src="~/Scripts/sweetalert2.all.min.js"></script>
+    <script src="~/JS Dosyaları/sweetalert2@11.js"></script>
+    <script src="~/Scripts/sweetalert2.all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+
+    <style>
+        .nav-link {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icon {
+            width: 30px; /* Tüm ikonlar için sabit genişlik */
+            text-align: center;
+            margin-right: 10px; /* İkon ile metin arasındaki boşluk */
+        }
+
+        .nav-text {
+            flex: 1; /* Metni ikonun yanına hizalar ve kalan alanı kaplar */
+        }
+        .brand-link {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center horizontally */
+            padding: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 20px;
+           
+        }
+        .info a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 16px;
+            text-align: center; /* Center text */
+        }
+        .user-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center horizontally */
+            padding: 10px;
+            border-bottom: 1px solid #4b4f58;
+            
+        }
+    </style>
+
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to to the body tag
+to get the desired effect
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="index3.html" class="brand-link">
+                
+                <span class="brand-text">N4B1 YAZILIM</span>
+            </a>
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <!-- User Info Section -->
+                    <div class="info">
+                        <!-- Display Username from Session -->
+                        <a href="#" class="d-block">
+                           Hoşgeldiniz @Session["Users"]
+                        </a>
+                    </div>
+                </div>
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <!-- Add icons to the links using the .nav-icon class
+    with font-awesome or any other icon font library -->
+                        <li class="nav-item">
+                            <a href="/Admin/Index" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p class="nav-text">Arıza Takip Sistemi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item has-treeview">
+                            <a href="/Admin/ArizaTalepleri" class="nav-link">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p class="nav-text">Arıza Taleplerim</p>
+                            </a>
+                        </li>
+                       
+                       
+                        @if (Session["Roles"] != null && Session["Roles"].ToString().Contains("Admin"))
+                        {
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-chart-pie"></i>
+                                    <p class="nav-text">Admin Panel<i class="right fas fa-angle-left"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="~/Admin/TabloyuGuncelle" class="nav-link">
+                                            <i class="far fa-edit nav-icon"></i>
+                                            <p class="nav-text">Tabloyu Güncelle</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="~/Admin/KullaniciEkle" class="nav-link">
+                                            <i class="fas fa-user-plus nav-icon"></i>
+                                            <p class="nav-text">Kullanıcı Ekle</p>
+                                        </a>
+                                    
+</li>
+                                    <li class="nav-item has-treeview">
+                                        <a href="/Admin/ArizaNedenleri" class="nav-link">
+                                            <i class="nav-icon fas fa-exclamation-circle"></i>
+                                            <p class="nav-text">Arıza Nedeni Ekle</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item has-treeview">
+                                        <a href="/Admin/ArizaDurumlari" class="nav-link">
+                                            <i class="nav-icon fas fa-info-circle"></i>
+                                            <p class="nav-text">Arıza Durumu Ekle</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item has-treeview">
+                                        <a href="/Admin/Sirketler" class="nav-link">
+                                            <i class="nav-icon fas fa-map-marker-alt"></i>
+                                            <p class="nav-text">Şirket Ekle</p>
+                                        </a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+                        }
+                        <li class="nav-item has-treeview">
+                            <a id="logoutBtn" class="nav-link">
+                                <i class="nav-icon fas fa-sign-out-alt"></i>
+                                <p class="nav-text">Çıkış yap</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Main content -->
+            <div class="content">
+                @RenderBody()
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+    </div>
+    <!-- ./wrapper -->
+    <!-- REQUIRED SCRIPTS -->
+    <!-- jQuery -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/AdminLTE-3.0.4/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE -->
+    <script src="~/AdminLTE-3.0.4/dist/js/adminlte.js"></script>
+    <!-- OPTIONAL SCRIPTS -->
+    <script src="~/AdminLTE-3.0.4/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/AdminLTE-3.0.4/dist/js/demo.js"></script>
+    <script src="~/AdminLTE-3.0.4/dist/js/pages/dashboard3.js"></script>
+    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
+
+
+
+</body>
+</html>
+<script type="text/javascript">
+$('#logoutBtn').on('click', function () {
+    Swal.fire({
+        title: 'Çıkış yapmak istediğinize emin misiniz?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Evet, çıkış yap',
+        cancelButtonText: 'Hayır, kal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Logout", "Account")',
+                success: function () {
+                Swal.fire({
+                icon: 'success',
+                title: 'Başarıyla çıkış yapıldı',
+                showConfirmButton: false,
+                timer: 1500
+                }).then(() => {
+                window.location.href = '@Url.Action("Login", "Account")';
+                });
+                },
+                error: function () {
+                Swal.fire({
+                icon: 'error',
+                title: 'Çıkış başarısız',
+                text: 'Çıkış yaparken bir hata oluştu. Lütfen tekrar deneyin.',
+                });
+                }
+                });
+                }
+                });
+});
+                </script>
